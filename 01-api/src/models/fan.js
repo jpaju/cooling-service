@@ -1,4 +1,6 @@
 const mongoose = require('mongoose')
+const { mongooseDocumentFormatter } = require('../utils/format')
+
 mongoose.set('useCreateIndex', true)
 
 
@@ -22,6 +24,11 @@ const fanSchema = new mongoose.Schema({
     }
 })
 
+fanSchema.statics.format = function(fan) {
+    return mongooseDocumentFormatter(fan)
+}
 
-const Fan = mongoose.model('Fan', fanSchema)
+const Fan = mongoose.model('Fan', fanSchema, 'fan')
+
+
 module.exports = Fan

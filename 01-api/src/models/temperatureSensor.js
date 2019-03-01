@@ -1,4 +1,6 @@
 const mongoose = require('mongoose')
+const { mongooseDocumentFormatter } = require('../utils/format')
+
 mongoose.set('useCreateIndex', true)
 
 
@@ -21,6 +23,11 @@ const temperatureSensorSchema = new mongoose.Schema({
     }
 })
 
+temperatureSensorSchema.statics.format = function(temperatureSensor) {
+    return mongooseDocumentFormatter(temperatureSensor)
+}
 
-const TemperatureSensor = mongoose.model('TemperatureSensor', temperatureSensorSchema)
+const TemperatureSensor = mongoose.model('TemperatureSensor', temperatureSensorSchema, 'temperature_sensor')
+
+
 module.exports = TemperatureSensor

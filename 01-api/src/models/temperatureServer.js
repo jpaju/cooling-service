@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
-const { URLValidator } = require('./validator')
+const { URLValidator } = require('../utils/validator')
+const { mongooseDocumentFormatter } = require('../utils/format')
 
 mongoose.set('useCreateIndex', true)
 
@@ -19,8 +20,11 @@ const temperatureServerSchema = new mongoose.Schema({
     }]
 })
 
+temperatureServerSchema.statics.format = function(temperatureServer) {
+    return mongooseDocumentFormatter(temperatureServer)
+}
+
+const TemperatureServer = mongoose.model('TemperatureServer', temperatureServerSchema, 'temperature_server')
 
 
-
-const TemperatureServer = mongoose.model('TemperatureServer', temperatureServerSchema)
 module.exports = TemperatureServer
