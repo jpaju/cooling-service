@@ -1,3 +1,5 @@
+const URLFormatter = require('normalize-url')
+
 
 const mongooseDocumentFormatter = (object) => {
     const formatted = { ...object._doc, id: object._id }
@@ -8,5 +10,6 @@ const mongooseDocumentFormatter = (object) => {
 
 
 module.exports = {
-    mongooseDocumentFormatter
+    mongooseDocumentFormatter,
+    URLFormatter
 }
