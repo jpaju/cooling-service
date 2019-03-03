@@ -1,5 +1,4 @@
 const mongoose = require('mongoose')
-const { URLValidator } = require('../utils/validator')
 const { mongooseDocumentFormatter } = require('../utils/format')
 
 mongoose.set('useCreateIndex', true)
@@ -9,10 +8,6 @@ const fanServerSchema = new mongoose.Schema({
     url: {
         type: String,
         required: true,
-        validate: {
-            validator: value => URLValidator(value),
-            message: 'Valid URL requires'
-        }
     },
     fans: [{
         type: mongoose.Schema.Types.ObjectId,

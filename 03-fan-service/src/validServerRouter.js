@@ -4,29 +4,27 @@ const { getConfig, getAllFans } = require('./fanService')
 
 validServerRouter.get('/', async(request, response) => {
 
-    const { url } = request.body
+    const { url } = request.query
 
     if (!url) {
         return response.status(400).send({ error: 'URL is required' })
     }
 
-    let responseData
     try {
         const [config, fans] = await Promise.all([
             getConfig(url),
             getAllFans(url)
         ])
 
-        responseData = {
+        const responseData = {
             valid: true,
             config,
             fans
         }
+        response.json(responseData)
     } catch (error) {
-        responseData = { valid: false }
+        response.json({ valid: false })
     }
-
-    response.json(responseData)
 })
 
 
