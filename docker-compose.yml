@@ -1,0 +1,20 @@
+version: '3'
+
+services:
+  api:
+    build: ./01-api
+    volumes:
+      - ./01-api/:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - 5000:5000
+    depends_on:
+      - fan-service
+  
+  fan-service:
+    build: ./03-fan-service
+    volumes:
+      - ./03-fan-service:/usr/src/app
+      - /usr/src/app/node_modules
+    expose:
+      - 5000
