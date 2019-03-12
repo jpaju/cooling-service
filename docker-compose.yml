@@ -1,20 +1,33 @@
+# Add 'dns-opts": [ "ndots:15" ]' to daemon.json to allow usage of other than FQDN
+# when using alpine-images
+
+
 version: '3'
 
 services:
   api:
-    build: ./01-api
+    build: ./api
     volumes:
-      - ./01-api/:/usr/src/app
+      - ./api/:/usr/src/app
       - /usr/src/app/node_modules
     ports:
       - 5000:5000
     depends_on:
       - fan-service
+      - temperature-service
   
   fan-service:
-    build: ./03-fan-service
+    build: ./fan-service
     volumes:
-      - ./03-fan-service:/usr/src/app
+      - ./fan-service:/usr/src/app
+      - /usr/src/app/node_modules
+    expose:
+      - 5000
+
+  temperature-service:
+    build: ./temperature-service
+    volumes:
+      - ./temperature-service:/usr/src/app
       - /usr/src/app/node_modules
     expose:
       - 5000
