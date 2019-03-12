@@ -1,0 +1,24 @@
+{
+  "name": "temperature-service",
+  "version": "1.0.0",
+  "description": "Handles communication with remote temperature sensors",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "watch": "nodemon src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Jaakko Paju",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.18.0",
+    "body-parser": "^1.18.3",
+    "dotenv": "^6.2.0",
+    "express": "^4.16.4",
+    "morgan": "^1.9.1"
+  },
+  "devDependencies": {
+    "eslint": "^5.15.0",
+    "nodemon": "^1.18.10"
+  }
+}
