@@ -3,11 +3,11 @@ const axios = require('axios')
 const path = 'fans'
 
 
-const create = (url, pin, optional = {}) => {
+const create = (url, pin, speed = undefined, frequency = undefined) => {
     const params = {
         pin,
-        dutycycle: optional.speed || undefined,
-        frequency: optional.frequency || undefined
+        dutycycle: speed,
+        frequency: frequency
     }
 
     return axios

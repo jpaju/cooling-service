@@ -16,14 +16,17 @@ validServerRouter.get('/', async(request, response) => {
             getAllFans(url)
         ])
 
-        const responseData = {
+        response.json({
             valid: true,
+            validURL: url,
             config,
             fans
-        }
-        response.json(responseData)
+        })
     } catch (error) {
-        response.json({ valid: false })
+        response.json({
+            valid: false,
+            invalidURL: url
+        })
     }
 })
 

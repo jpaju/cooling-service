@@ -4,7 +4,7 @@ const bodyParser = require('body-parser')
 const middleware = require('./utils/middleware')
 const config = require('./utils/config')
 
-const validServerRouter = require('./validServerRouter')
+const validFanServerRouter = require('./validFanServerRouter')
 
 
 // Set up middleware
@@ -12,7 +12,7 @@ app.use(bodyParser.json())
 app.use(middleware.logger())
 
 // Set up controllers
-app.use('/validserver', validServerRouter)
+app.use('/validserver', validFanServerRouter)
 app.use(middleware.error())
 
 
