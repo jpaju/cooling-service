@@ -20,15 +20,20 @@ const fanSchema = new mongoose.Schema({
     server: {
         type:mongoose.Schema.Types.ObjectId,
         ref: 'FanServer',
-        required: true
+        required: true,
+        autopopulate: {
+            select: 'url',
+            maxDepth: 1
+        }
     }
 })
+fanSchema.plugin(require('mongoose-autopopulate'))
 
 fanSchema.statics.format = function(fan) {
     return mongooseDocumentFormatter(fan)
 }
 
-const Fan = mongoose.model('Fan', fanSchema, 'fan')
+const Fan = mongoose.model('Fan', fanSchema)
 
 
 module.exports = Fan

@@ -13,11 +13,19 @@ const coolingUnitSchema = new mongoose.Schema({
     },
     devices: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Device'
+        ref: 'Device',
+        autopopulate: {
+            select: 'name',
+            maxDepth: 1
+        }
     }],
     fans: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Fan'
+        ref: 'Fan',
+        autopopulate: {
+            select: ['speed, frequency'],
+            maxDepth: 1
+        }
     }]
 })
 
@@ -25,7 +33,7 @@ coolingUnitSchema.statics.format = function(coolingUnit) {
     return mongooseDocumentFormatter(coolingUnit)
 }
 
-const CoolingUnit = mongoose.model('CoolingUnit', coolingUnitSchema, 'cooling_unit')
+const CoolingUnit = mongoose.model('CoolingUnit', coolingUnitSchema)
 
 
 module.exports = CoolingUnit

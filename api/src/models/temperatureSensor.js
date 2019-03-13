@@ -19,15 +19,20 @@ const temperatureSensorSchema = new mongoose.Schema({
     server: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'TemperatureServer',
-        required: true
+        required: true,
+        autopopulate: {
+            select: 'url',
+            maxDepth: 1
+        }
     }
 })
+temperatureSensorSchema.plugin(require('mongoose-autopopulate'))
 
 temperatureSensorSchema.statics.format = function(temperatureSensor) {
     return mongooseDocumentFormatter(temperatureSensor)
 }
 
-const TemperatureSensor = mongoose.model('TemperatureSensor', temperatureSensorSchema, 'temperature_sensor')
+const TemperatureSensor = mongoose.model('TemperatureSensor', temperatureSensorSchema)
 
 
 module.exports = TemperatureSensor

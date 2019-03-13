@@ -11,15 +11,20 @@ const deviceSchema = new mongoose.Schema({
     },
     temperatureSensor : {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'TemperatureSensor'
+        ref: 'TemperatureSensor',
+        autopopulate: {
+            select: ['temperature', 'lastUpdate'],
+            maxDepth: 1
+        }
     }
 })
+deviceSchema.plugin(require('mongoose-autopopulate'))
 
 deviceSchema.statics.format = function(device) {
     return mongooseDocumentFormatter(device)
 }
 
-const Device = mongoose.model('Device', deviceSchema, 'device')
+const Device = mongoose.model('Device', deviceSchema)
 
 
 module.exports = Device
