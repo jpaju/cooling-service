@@ -23,7 +23,21 @@ const fanServerValidator = async (url) => {
     }
 }
 
+const temperatureServerValidator = async (url) => {
+    try {
+        const result = await axios
+            .get('http://temperature-service:5000/validserver', { params: { url } })
+            .then(r => r.data)
+
+        return result
+    } catch (err) {
+        return { valid: false }
+    }
+}
+
+
 module.exports = {
     URLValidator,
-    fanServerValidator
+    fanServerValidator,
+    temperatureServerValidator
 }
