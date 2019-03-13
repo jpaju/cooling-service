@@ -1,4 +1,4 @@
-# Add 'dns-opts": [ "ndots:15" ]' to daemon.json to allow usage of other than FQDN
+# Add '"dns-opts": [ "ndots:15" ]' to daemon.json to allow usage of other than FQDN
 # when using alpine-images
 
 
