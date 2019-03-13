@@ -33,10 +33,9 @@ app.use(middleware.error())
 mongoose
     .set('useFindAndModify', false)
     .connect(config.mongoUrl, { useNewUrlParser: true })
-    .then(console.log('Connected to database'))
     .then(console.log(`Mongoose version ${mongoose.version}`))
+    .then(console.log(`Mongoose connection status ${mongoose.connection.readyState}`))
     .catch(err => console.log(err))
-
 
 // Create and set up server
 const server = http.createServer(app)

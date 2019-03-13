@@ -1,5 +1,5 @@
 {
-  "name": "01-api",
+  "name": "api",
   "version": "1.0.0",
   "description": "API for controlling and monitoring cooling-service",
   "main": "index.js",
@@ -17,6 +17,7 @@
     "dotenv": "^6.2.0",
     "express": "^4.16.4",
     "mongoose": "^5.4.16",
+    "mongoose-autopopulate": "^0.9.1",
     "mongoose-validator": "^2.1.0",
     "morgan": "^1.9.1",
     "normalize-url": "^4.2.0"
