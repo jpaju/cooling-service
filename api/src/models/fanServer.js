@@ -20,7 +20,16 @@ const fanServerSchema = new mongoose.Schema({
         type: Number,
         min: 0,
         max: 13
-    }]
+    }],
+    config: {
+        minSpeed: Number,
+        minFrequency: Number,
+        maxFrequency: Number
+    },
+    defaults: {
+        speed: Number,
+        frequency: Number,
+    }
 })
 fanServerSchema.plugin(require('mongoose-autopopulate'))
 
