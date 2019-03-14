@@ -2,8 +2,6 @@ const mongoose = require('mongoose')
 const TemperatureSensor = require('./temperatureSensor')
 const { mongooseDocumentFormatter } = require('../utils/format')
 
-mongoose.set('useCreateIndex', true)
-
 
 const temperatureServerSchema = new mongoose.Schema({
     url: {
@@ -23,11 +21,12 @@ temperatureServerSchema.plugin(require('mongoose-autopopulate'))
 
 // Cascade temperature server deletion to also delete temperature sensors
 temperatureServerSchema.pre('remove', async function() {
-    await TemperatureSensor.remove({
+    const sensorsToRemove = await TemperatureSensor.find({
         '_id': {
             '$in': this.sensors
         }
     })
+    await Promise.all(sensorsToRemove.map(s => s.remove()))
 })
 
 temperatureServerSchema.statics.format = function(temperatureServer) {

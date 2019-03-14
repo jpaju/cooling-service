@@ -1,8 +1,6 @@
 const mongoose = require('mongoose')
 const { mongooseDocumentFormatter }  = require('../utils/format')
 
-mongoose.set('useCreateIndex', true)
-
 
 const coolingUnitSchema = new mongoose.Schema({
     name: {
@@ -23,11 +21,12 @@ const coolingUnitSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Fan',
         autopopulate: {
-            select: ['speed, frequency'],
+            select: ['speed', 'frequency'],
             maxDepth: 1
         }
     }]
 })
+coolingUnitSchema.plugin(require('mongoose-autopopulate'))
 
 coolingUnitSchema.statics.format = function(coolingUnit) {
     return mongooseDocumentFormatter(coolingUnit)

@@ -2,8 +2,6 @@ const mongoose = require('mongoose')
 const Fan = require('./fan')
 const { mongooseDocumentFormatter } = require('../utils/format')
 
-mongoose.set('useCreateIndex', true)
-
 
 const fanServerSchema = new mongoose.Schema({
     url: {
@@ -28,11 +26,12 @@ fanServerSchema.plugin(require('mongoose-autopopulate'))
 
 // Cascade fan server deletion to also delete fans on server
 fanServerSchema.pre('remove', async function() {
-    await Fan.remove({
+    const fans = await Fan.find({
         '_id': {
             '$in': this.fans
         }
     })
+    await Promise.all(fans.map(f => f.remove()))
 })
 
 fanServerSchema.statics.format = function(fanServer) {

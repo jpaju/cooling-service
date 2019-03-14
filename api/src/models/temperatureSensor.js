@@ -1,7 +1,6 @@
 const mongoose = require('mongoose')
 const { mongooseDocumentFormatter } = require('../utils/format')
-
-mongoose.set('useCreateIndex', true)
+const Device = require('./device')
 
 
 const temperatureSensorSchema = new mongoose.Schema({
@@ -27,6 +26,16 @@ const temperatureSensorSchema = new mongoose.Schema({
     }
 })
 temperatureSensorSchema.plugin(require('mongoose-autopopulate'))
+
+// Remove reference to temperature sensor from device
+temperatureSensorSchema.pre('remove', function() {
+    Device.findOne({ temperatureSensor: this._id }, function(err, device) {
+        if (!device || err) return
+
+        device.temperatureSensor = undefined
+        device.save()
+    })
+})
 
 temperatureSensorSchema.statics.format = function(temperatureSensor) {
     return mongooseDocumentFormatter(temperatureSensor)

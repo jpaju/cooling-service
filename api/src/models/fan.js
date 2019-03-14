@@ -1,7 +1,6 @@
 const mongoose = require('mongoose')
 const { mongooseDocumentFormatter } = require('../utils/format')
-
-mongoose.set('useCreateIndex', true)
+const CoolingUnit = require('./coolingUnit')
 
 
 const fanSchema = new mongoose.Schema({
@@ -28,6 +27,10 @@ const fanSchema = new mongoose.Schema({
     }
 })
 fanSchema.plugin(require('mongoose-autopopulate'))
+
+fanSchema.pre('remove', function() {
+    CoolingUnit.update({}, { '$pull': { 'fans': { id: this._id } } })
+})
 
 fanSchema.statics.format = function(fan) {
     return mongooseDocumentFormatter(fan)
