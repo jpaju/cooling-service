@@ -32,7 +32,9 @@ app.use(middleware.error())
 // Set up database connection
 mongoose
     .set('useFindAndModify', false)
-    .connect(config.mongoUrl, { useNewUrlParser: true })
+    .set('useCreateIndex', true)
+    .set('useNewUrlParser', true)
+    .connect(config.mongoUrl)
     .then(console.log(`Mongoose version ${mongoose.version}`))
     .then(console.log(`Mongoose connection status ${mongoose.connection.readyState}`))
     .catch(err => console.log(err))
