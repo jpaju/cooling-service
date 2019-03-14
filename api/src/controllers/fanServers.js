@@ -30,7 +30,7 @@ fanServersRouter.post('/', async (request, response) => {
     }
 
     const formattedURL = URLFormatter(url)
-    const { valid, config, fans } = await fanServerValidator(formattedURL)
+    const { valid, validURL, config, fans } = await fanServerValidator(formattedURL)
 
     // If validation fails, return
     if (!valid) {
@@ -39,25 +39,40 @@ fanServersRouter.post('/', async (request, response) => {
 
     // Create new fan server
     const newFanServer = new FanServer({
-        url: formattedURL,
+        url: validURL,
         devices: devices,
         fanPins: config.pins
     })
-    await newFanServer.save()
 
-    // Store fans from server to database
-    await Promise.all(
-        fans.map(fan => {
-            new Fan({
-                pinNumber: fan.pin,
-                speed: fan.dutycycle,
-                frequency: fan.frequency,
-                server: newFanServer
-            }).save()
+    const newFans = fans.map(fan =>
+        new Fan({
+            pinNumber: fan.pin,
+            speed: fan.dutycycle,
+            frequency: fan.frequency,
+            server: newFanServer
         })
     )
 
-    response.status(201).json(FanServer.format(newFanServer))
+    // Add fans to server
+    newFanServer.fans = newFanServer.fans.concat(newFans.map(s => s._id))
+
+    // Store fans from server to database
+    await Promise.all([
+        newFanServer.save(),
+        ...newFans.map(f => f.save())
+    ])
+
+    // Populate server-document, format and return
+    FanServer.populate(
+        newFanServer,
+        {
+            path: 'fans',
+            select: ['pinNumber', 'speed', 'frequency']
+        },
+        function(err, srv) {
+            response.status(201).json(FanServer.format(srv))
+        }
+    )
 })
 
 fanServersRouter.put('/:id', async (request, response) => {
