@@ -29,7 +29,16 @@ coolingUnitsRouter.post('/', async (request, response) => {
         devices: body.devices,
         fans: body.fans
     })
-    await newCoolingUnit.save()
+    try {
+        await newCoolingUnit
+            .save()
+
+    } catch (error) {
+        if (error.code === 11000) {
+            return response.status(400).send({ error: 'Name must be unique' })
+        }
+        response.status(400).send({ error: 'Creation failed' })
+    }
 
     response.status(201).json(CoolingUnit.format(newCoolingUnit))
 })
@@ -38,6 +47,7 @@ coolingUnitsRouter.put('/:id', async(request, response) => {
     try {
         const updatedCoolingUnit = await CoolingUnit
             .findOneAndUpdate({ _id: request.params.id }, request.body, { new: true })
+
         response.json(CoolingUnit.format(updatedCoolingUnit))
     } catch (error) {
         response.status(400).send({ error: 'Invalid request' })

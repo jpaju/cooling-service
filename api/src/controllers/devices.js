@@ -29,7 +29,14 @@ devicesRouter.post('/', async(request, response) => {
         name: body.name,
         temperatureSensor: body.temperatureSensor
     })
-    await newDevice.save()
+    try {
+        await newDevice.save()
+    } catch (error) {
+        if (error.code === 11000) {
+            return response.status(400).send({ error: 'Name must be unique' })
+        }
+        response.status(400).send({ error: 'Adding new device failed' })
+    }
 
     response.status(201).json(Device.format(newDevice))
 })
