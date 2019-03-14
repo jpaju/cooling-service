@@ -22,7 +22,7 @@ fanServersRouter.get('/:id', async (request, response) => {
 })
 
 fanServersRouter.post('/', async (request, response) => {
-    const { url, devices } = request.body
+    const { url } = request.body
 
     // Check that url is specified
     if (!url) {
@@ -30,7 +30,7 @@ fanServersRouter.post('/', async (request, response) => {
     }
 
     const formattedURL = URLFormatter(url)
-    const { valid, validURL, config, fans } = await fanServerValidator(formattedURL)
+    const { valid, validURL, fans, fanPins, config, defaults } = await fanServerValidator(formattedURL)
 
     // If validation fails, return
     if (!valid) {
@@ -40,8 +40,9 @@ fanServersRouter.post('/', async (request, response) => {
     // Create new fan server
     const newFanServer = new FanServer({
         url: validURL,
-        devices: devices,
-        fanPins: config.pins
+        fanPins,
+        config,
+        defaults
     })
 
     const newFans = fans.map(fan =>
@@ -67,7 +68,7 @@ fanServersRouter.post('/', async (request, response) => {
         newFanServer,
         {
             path: 'fans',
-            select: ['pinNumber', 'speed', 'frequency']
+            select: '-server -__v'
         },
         function(err, srv) {
             response.status(201).json(FanServer.format(srv))
