@@ -32,13 +32,36 @@ const getFan = (url, pin) => {
         .then(r => r.data.data.fan)
 }
 
-const getConfig = async(url) => {
-    const [defaults, fanPins] = await Promise.all([
-        axios.get(`${url}/${path}/defaults`).then(r => r.data.data),
-        axios.get(`${url}/${path}/fanpins`).then(r => r.data.data)
+const getAllConfig = async(url) => {
+    const [defaultsData, fanPins] = await Promise.all([
+        getDefaults(url),
+        getFanPins(url)
     ])
 
-    return { ...defaults, ...fanPins }
+    const config = {
+        minSpeed: defaultsData['min dutycycle'],
+        minFrequency: defaultsData['min frequency'],
+        maxFrequency: defaultsData['max frequency'],
+    }
+
+    const defaults = {
+        speed: defaultsData.dutycycle,
+        frequency: defaultsData.frecuency
+    }
+
+    return { config, defaults, fanPins }
+}
+
+const getDefaults = (url) => {
+    return axios
+        .get(`${url}/${path}/defaults`)
+        .then(r => r.data.data.defaults)
+}
+
+const getFanPins = (url) => {
+    return axios
+        .get(`${url}/${path}/fanpins`)
+        .then(r => r.data.data.pins)
 }
 
 const setFanSpeed = (url, pin, speed) => {
@@ -67,7 +90,9 @@ module.exports = {
     remove,
     getAllFans,
     getFan,
-    getConfig,
+    getAllConfig,
+    getDefaults,
+    getFanPins,
     setFanSpeed,
     setFanFrequency,
 }
