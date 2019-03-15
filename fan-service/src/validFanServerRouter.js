@@ -1,5 +1,5 @@
 const validServerRouter = require('express').Router()
-const { getAllConfig, getAllFans } = require('./fanService')
+const { getConfig, getAllFans } = require('./fanService')
 
 
 validServerRouter.get('/', async(request, response) => {
@@ -11,8 +11,8 @@ validServerRouter.get('/', async(request, response) => {
     }
 
     try {
-        const [{ config, defaults, fanPins }, fans] = await Promise.all([
-            getAllConfig(url),
+        const [{ limits, defaults, fanPins }, fans] = await Promise.all([
+            getConfig(url),
             getAllFans(url)
         ])
 
@@ -21,7 +21,7 @@ validServerRouter.get('/', async(request, response) => {
             validURL: url,
             fans,
             fanPins,
-            config,
+            limits,
             defaults,
         })
     } catch (error) {

@@ -30,7 +30,7 @@ fanServersRouter.post('/', async (request, response) => {
     }
 
     const formattedURL = URLFormatter(url)
-    const { valid, validURL, fans, fanPins, config, defaults } = await fanServerValidator(formattedURL)
+    const { valid, validURL, fans, fanPins, limits, defaults } = await fanServerValidator(formattedURL)
 
     // If validation fails, return
     if (!valid) {
@@ -41,7 +41,7 @@ fanServersRouter.post('/', async (request, response) => {
     const newFanServer = new FanServer({
         url: validURL,
         fanPins,
-        config,
+        limits,
         defaults
     })
 

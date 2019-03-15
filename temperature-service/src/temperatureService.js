@@ -6,7 +6,7 @@ const path = 'temperatures'
 const getTemperatures = (url) => {
     return axios
         .get(`${url}/${path}`)
-        .then(r => r.data.data.tempsensors)
+        .then(r => r.data)
 }
 
 const updateTemps = (url) => {

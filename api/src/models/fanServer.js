@@ -21,7 +21,7 @@ const fanServerSchema = new mongoose.Schema({
         min: 0,
         max: 13
     }],
-    config: {
+    limits: {
         minSpeed: Number,
         minFrequency: Number,
         maxFrequency: Number
