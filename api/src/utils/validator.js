@@ -19,7 +19,7 @@ const fanServerValidator = async (url) => {
 
         return result
     } catch (err) {
-        return { valid: false }
+        return { error: `URL: ${url} is not valid` }
     }
 }
 
@@ -31,7 +31,7 @@ const temperatureServerValidator = async (url) => {
 
         return result
     } catch (err) {
-        return { valid: false }
+        return { error: `URL: ${url} is not valid` }
     }
 }
 
