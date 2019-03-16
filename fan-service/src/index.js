@@ -3,8 +3,11 @@ const app = require('express')()
 const bodyParser = require('body-parser')
 const middleware = require('./utils/middleware')
 const config = require('./utils/config')
-
 const validFanServerRouter = require('./validFanServerRouter')
+
+const mongoose = require('mongoose')
+const { handleChange } = require('./change_handlers/fanHandler')
+const Fan = require('./models/fan')
 
 
 // Set up middleware
@@ -15,7 +18,19 @@ app.use(middleware.logger())
 app.use('/validserver', validFanServerRouter)
 app.use(middleware.error())
 
+mongoose
+    .set('useFindAndModify', false)
+    .set('useCreateIndex', true)
+    .set('useNewUrlParser', true)
+    .connect(config.mongoUrl)
+    .then(console.log(`Mongoose connection status ${mongoose.connection.readyState}`))
+    .catch(err => console.log(err))
 
+
+// Set up change listeners
+Fan.watch().on('change', handleChange)
+
+// Create and start server
 const server = http.createServer(app)
 
 server.listen(config.port, () => {
