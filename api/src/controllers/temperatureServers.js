@@ -30,11 +30,11 @@ temperatureServersRouter.post('/', async (request, response) => {
 
     // Format URL and validate it
     const formattedURL = URLFormatter(url)
-    const { valid, validURL, temperatures } = await temperatureServerValidator(formattedURL)
+    const { error, validURL, temperatures } = await temperatureServerValidator(formattedURL)
 
     // If validation fails, return
-    if (!valid) {
-        return response.status(400).send({ error: `URL ${url} is not valid` })
+    if (error) {
+        return response.status(400).send({ error })
     }
 
     // Create new temperature server

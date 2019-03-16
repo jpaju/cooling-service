@@ -3,6 +3,7 @@ const app = require('express')()
 const bodyParser = require('body-parser')
 const middleware = require('./utils/middleware')
 const config = require('./utils/config')
+const mongoose = require('mongoose')
 
 const validTemperatureServerRouter = require('./validTemperatureServerRouter')
 
@@ -15,6 +16,15 @@ app.use(middleware.logger())
 app.use('/validserver', validTemperatureServerRouter)
 app.use(middleware.error())
 
+// Set up database connection
+mongoose
+    .set('useFindAndModify', false)
+    .set('useCreateIndex', true)
+    .set('useNewUrlParser', true)
+    .connect(config.mongoUrl)
+    .then(console.log(`Mongoose version ${mongoose.version}`))
+    .then(console.log(`Mongoose connection status ${mongoose.connection.readyState}`))
+    .catch(err => console.log(err))
 
 const server = http.createServer(app)
 
