@@ -1,7 +1,7 @@
 const validServerRouter = require('express').Router()
-const { getConfig, getAllFans } = require('./fanService')
-const { getFQDNUrl } = require('./utils/dnsUtils')
-const FanServer = require('./models/fanServer')
+const { getConfig, getAllFans } = require('../fanService')
+const { getFQDNUrl } = require('../utils/dnsUtils')
+const FanServer = require('../models/fanServer')
 
 
 validServerRouter.get('/', async(request, response) => {

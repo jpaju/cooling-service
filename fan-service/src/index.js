@@ -3,7 +3,8 @@ const app = require('express')()
 const bodyParser = require('body-parser')
 const middleware = require('./utils/middleware')
 const config = require('./utils/config')
-const validFanServerRouter = require('./validFanServerRouter')
+const validFanServerRouter = require('./routers/validFanServerRouter')
+const deleteFanRouter = require('./routers/deleteFanRouter')
 
 const mongoose = require('mongoose')
 const { handleChange } = require('./change_handlers/fanHandler')
@@ -16,6 +17,7 @@ app.use(middleware.logger())
 
 // Set up controllers
 app.use('/validserver', validFanServerRouter)
+app.use('/deletefan', deleteFanRouter)
 app.use(middleware.error())
 
 mongoose
