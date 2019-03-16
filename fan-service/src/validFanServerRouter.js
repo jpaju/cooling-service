@@ -1,5 +1,7 @@
 const validServerRouter = require('express').Router()
 const { getConfig, getAllFans } = require('./fanService')
+const { getFQDNUrl } = require('./utils/dnsUtils')
+const FanServer = require('./models/fanServer')
 
 
 validServerRouter.get('/', async(request, response) => {
@@ -10,15 +12,21 @@ validServerRouter.get('/', async(request, response) => {
         return response.status(400).send({ error: 'URL is required' })
     }
 
+    const FQDNUrl = await getFQDNUrl(url)
+    const existingServer = await FanServer.findOne({ url: FQDNUrl })
+
+    if (existingServer) {
+        return response.json({ error: `Fan server with URL: ${FQDNUrl} already exists in database` })
+    }
+
     try {
         const [{ limits, defaults, fanPins }, fans] = await Promise.all([
-            getConfig(url),
-            getAllFans(url)
+            getConfig(FQDNUrl),
+            getAllFans(FQDNUrl)
         ])
 
         response.json({
-            valid: true,
-            validURL: url,
+            validURL: FQDNUrl,
             fans,
             fanPins,
             limits,
@@ -26,7 +34,7 @@ validServerRouter.get('/', async(request, response) => {
         })
     } catch (error) {
         response.json({
-            valid: false,
+            error: `URL: ${url} is not valid fan server`,
             invalidURL: url
         })
     }

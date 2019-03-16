@@ -7,6 +7,7 @@ const fanServerSchema = new mongoose.Schema({
     url: {
         type: String,
         required: true,
+        unique: true
     },
     fans: [{
         type: mongoose.Schema.Types.ObjectId,
