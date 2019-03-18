@@ -4,9 +4,7 @@ const bodyParser = require('body-parser')
 const middleware = require('./utils/middleware')
 const config = require('./utils/config')
 const mongoose = require('mongoose')
-const { startUpdater,
-    setUpdateInterval
-} = require('./temperatureUpdater')
+const { initUpdater } = require('./temperatureUpdater')
 
 const validTemperatureServerRouter = require('./validTemperatureServerRouter')
 
@@ -29,9 +27,8 @@ mongoose
     .then(console.log(`Mongoose connection status ${mongoose.connection.readyState}`))
     .catch(err => console.log(err))
 
-// Set up temperature updater to update temperatures every 20 seconds
-setUpdateInterval(20)
-startUpdater()
+// Initialize temperature updater
+initUpdater()
 
 const server = http.createServer(app)
 

@@ -1,10 +1,22 @@
 const temperatureService = require('./temperatureService')
 const TemperatureSensor = require('./models/temperatureSensor')
 const TemperatureServer = require('./models/temperatureServer')
+const Settings = require('./models/setting')
 
 
-let updateInterval = 10000
+let updateIntervalSeconds
+let updaterRunning
 let updaterIntervalId = undefined
+
+const watchPipeline = [
+    { '$match': {
+        'operationType': 'update',
+        'updateDescription.updatedFields.temperature.updater': {
+            '$exists': true
+        }
+    } },
+    { '$addFields': { updaterState: '$fullDocument.temperature.updater' } }
+]
 
 const temperatureUpdater = async () => {
 
@@ -34,15 +46,57 @@ const temperatureUpdater = async () => {
     })
 }
 
-const setUpdateInterval = (newValue) => updateInterval = newValue * 1000
+const initUpdater = async () => {
+    // Set values defined in settings
+    const { temperature: { updater } } = await Settings.findOne({})
 
-const startUpdater = () => updaterIntervalId = setInterval(temperatureUpdater, updateInterval)
+    setUpdaterRunningState(updater.running)
+    setUpdateInterval(updater.updateInterval)
 
-const stopUpdater = () => clearInterval(updaterIntervalId)
+    // Subscribe to changes in settings
+    Settings.watch(watchPipeline, { fullDocument: 'updateLookup' }).on('change', handleChange)
+}
+
+const handleChange = ({ updaterState }) => {
+
+    const {
+        updateInterval: newInterval = updateIntervalSeconds,
+        running: newRunningState = updaterRunning
+    } = updaterState
+
+    // Set new update interval if it differs from current value
+    if (newInterval !== updateIntervalSeconds)
+        setUpdateInterval(newInterval)
+
+    // Set updater running state if it differs from current state
+    if (newRunningState !== updaterRunning)
+        setUpdaterRunningState(newRunningState)
+}
+
+const setUpdateInterval = (newInterval) => {
+    updateIntervalSeconds = newInterval
+
+    // If currently running, restart updater to use new interval
+    if (updaterRunning) {
+        stopUpdater()
+        startUpdater()
+    }
+}
+
+const setUpdaterRunningState = (newState) => newState ? startUpdater() : stopUpdater()
+
+const startUpdater = () => {
+    updaterIntervalId = setInterval(temperatureUpdater, updateIntervalSeconds*1000)
+    updaterRunning = true
+}
+
+const stopUpdater = () => {
+    clearInterval(updaterIntervalId)
+    updaterIntervalId = undefined
+    updaterRunning = false
+}
 
 
 module.exports = {
-    startUpdater,
-    stopUpdater,
-    setUpdateInterval,
+    initUpdater
 }
