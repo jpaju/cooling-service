@@ -12,22 +12,13 @@ const fansRouter = require('./controllers/fans')
 const fanServersRouter = require('./controllers/fanServers')
 const temperatureSensorsRouter = require('./controllers/temperatureSensors')
 const temperatureServersRouter = require('./controllers/temperatureServers')
+const settingsRouter = require('./controllers/settings')
+const Settings = require('./models/setting')
 
 
 //Set up middleware
 app.use(bodyParser.json())
 app.use(middleware.logger())
-
-//Set up routers
-app.use('/coolingunit', coolingUnitsRouter)
-app.use('/device', devicesRouter)
-app.use('/fan', fansRouter)
-app.use('/fanserver', fanServersRouter)
-app.use('/temperature', temperatureSensorsRouter)
-app.use('/temperatureserver', temperatureServersRouter)
-
-//If no routes match, send error message
-app.use(middleware.error())
 
 // Set up database connection
 mongoose
@@ -38,6 +29,19 @@ mongoose
     .then(console.log(`Mongoose version ${mongoose.version}`))
     .then(console.log(`Mongoose connection status ${mongoose.connection.readyState}`))
     .catch(err => console.log(err))
+Settings.initialize()
+
+//Set up routers
+app.use('/coolingunit', coolingUnitsRouter)
+app.use('/device', devicesRouter)
+app.use('/fan', fansRouter)
+app.use('/fanserver', fanServersRouter)
+app.use('/temperature', temperatureSensorsRouter)
+app.use('/temperatureserver', temperatureServersRouter)
+app.use('/settings', settingsRouter)
+
+//If no routes match, send error message
+app.use(middleware.error())
 
 // Create and set up server
 const server = http.createServer(app)
