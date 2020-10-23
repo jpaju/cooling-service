@@ -4,8 +4,8 @@ const TemperatureServer = require('./models/temperatureServer')
 const Settings = require('./models/setting')
 
 
-let updateIntervalSeconds
-let updaterRunning
+let updateIntervalSeconds = 10
+let updaterRunning = true
 let updaterIntervalId = undefined
 
 const watchPipeline = [
@@ -44,6 +44,8 @@ const temperatureUpdater = async () => {
         sensor.temperature = temperatureMap[sensor.sensorId]
         sensor.save()
     })
+
+    console.log('Updater finished!')
 }
 
 const initUpdater = async () => {
@@ -83,7 +85,7 @@ const setUpdateInterval = (newInterval) => {
     }
 }
 
-const setUpdaterRunningState = (newState) => newState ? startUpdater() : stopUpdater()
+const setUpdaterRunningState = (running) => running ? startUpdater() : stopUpdater()
 
 const startUpdater = () => {
     updaterIntervalId = setInterval(temperatureUpdater, updateIntervalSeconds*1000)

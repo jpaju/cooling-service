@@ -17,20 +17,6 @@ const settingsSchema = new mongoose.Schema({
                 default: true
             }
         }
-    },
-    fanController: {
-        updateInterval: {
-            type: Number,
-            required: true,
-            default: 10,
-            min: 3,
-            max: 60
-        },
-        running: {
-            type: Boolean,
-            required: true,
-            default: true
-        }
     }
 })
 
